@@ -1,6 +1,8 @@
 [package]
 name = "dungeon"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
+indoc = "2.0.5"
+input-macro = "0.2.0"
