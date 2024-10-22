@@ -52,6 +52,7 @@ enum Action {
     None,
     Moved,
     Rotated,
+    HitDoor,
     HitWall,
     UnknowCommand,
 }
@@ -163,6 +164,7 @@ fn main() {
             Action::None => {}
             Action::Rotated => {}
             Action::Moved => {}
+            Action::HitDoor => println!("U WINNER!!!"),
             Action::HitWall => println!("You hit a wall!"),
             Action::UnknowCommand => println!("Unknow command. Try again!"),
         }
@@ -207,11 +209,7 @@ fn main() {
                         Action::Moved
                     }
                     Block::Wall => Action::HitWall,
-                    Block::Door => {
-                        player.x = x.unwrap();
-                        player.y = y.unwrap();
-                        Action::Moved
-                    }
+                    Block::Door => Action::HitDoor,
                 }
             }
             _ => Action::UnknowCommand,
