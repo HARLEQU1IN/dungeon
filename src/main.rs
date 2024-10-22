@@ -18,8 +18,8 @@ pub static MAP: [[Block; 11]; 11] = [
     [
         Wall, Door, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall,
     ],
-    [Wall, Air, Air, Wall, Air, Air, Wall, Air, Air, Wall, Wall],
-    [Wall, Air, Wall, Wall, Air, Air, Air, Air, Wall, Wall, Wall],
+    [Door, Air, Air, Wall, Air, Air, Wall, Air, Air, Wall, Wall],
+    [Door, Air, Wall, Wall, Air, Air, Air, Air, Wall, Wall, Wall],
     [Wall, Air, Air, Air, Air, Wall, Air, Air, Air, Air, Wall],
     [
         Wall, Wall, Wall, Wall, Wall, Wall, Wall, Air, Air, Air, Wall,
@@ -36,6 +36,14 @@ pub static MAP: [[Block; 11]; 11] = [
 
 #[derive(Clone, Copy)]
 enum Direction {
+    Up,
+    Right,
+    Down,
+    Left,
+}
+
+#[derive(Clone, Copy)]
+enum DoorDirection {
     Up,
     Down,
     Left,
@@ -129,20 +137,19 @@ fn main() {
         };
 
         let mut frame = [[' '; 26]; 14];
-        for (i, (dx, dy)) in d.into_iter().enumerate() {
-            let x = player.x.checked_add_signed(dx);
-            let y = player.y.checked_add_signed(dy);
+        for (i, (dx, dy)) in d.iter().enumerate() {
+            let x = player.x.checked_add_signed(*dx);
+            let y = player.y.checked_add_signed(*dy);
             let block = match (x, y) {
                 (Some(x), Some(y)) if x < WIDTH && y < HEIGHT => MAP[y][x],
                 _ => Block::Wall,
             };
             let pattern = match block {
                 Block::Wall => wall::PATTERNS[i],
-
-                Block::Door => exit::PATTERNS[i*4 + (player.direction as usize)],
-
+                Block::Door => {
+                    exit::PATTERNS[i * 4 + (player.direction as usize)]
+                },
                 _ => continue,
-
             };
             for (i, line) in pattern.lines().enumerate() {
                 for (j, char) in line.chars().enumerate() {
@@ -166,7 +173,7 @@ fn main() {
             Action::Moved => {}
             Action::HitDoor => println!("U WINNER!!!"),
             Action::HitWall => println!("You hit a wall!"),
-            Action::UnknowCommand => println!("Unknow command. Try again!"),
+            Action::UnknowCommand => println!("Unknown command. Try again!"),
         }
 
         let n: String = input!(":> ").to_lowercase();
@@ -178,8 +185,7 @@ fn main() {
                     Direction::Up => Direction::Right,
                     Direction::Down => Direction::Left,
                 };
-                Action::Rotated
-            }
+                Action::Rotated }
             "a" | "left" => {
                 player.direction = match player.direction {
                     Direction::Left => Direction::Down,
