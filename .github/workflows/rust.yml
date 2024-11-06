@@ -1,0 +1,91 @@
+name: Rust
+
+on:
+  push:
+    tags:
+      - v*
+    paths-ignore:
+      - .github/workflows/*
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Cargo check
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Cargo check
+        run: cargo check --verbose --release
+
+  fmt:
+    name: Cargo fmt
+    needs: check
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - name: Cargo fmt
+        run: cargo +nightly fmt --all -- --check
+
+  clippy:
+    name: Cargo clippy
+    needs: check
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: clippy
+      - name: Cargo clippy
+        run: cargo +nightly clippy --verbose --release
+
+  build:
+    name: Cargo build
+    needs: [fmt, clippy]
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Cargo build
+        run: cargo build --verbose --release
+
+  test:
+    name: Cargo build
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Cargo test
+        run: cargo test --verbose --release

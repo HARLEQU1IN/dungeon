@@ -1,0 +1,13 @@
+{
+    "editor.fontFamily": "'Fira Code'",
+    "editor.fontLigatures": "'ss04', 'ss06', 'ss07', 'ss09', 'cv25', 'cv26', 'cv28', 'cv32'",
+    "rust-analyzer.check.command": "clippy",
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "rust-analyzer.rustfmt.extraArgs": [
+        "+nightly"
+    ],
+    "editor.defaultFormatter": "EditorConfig.EditorConfig",
+    "editor.formatOnSave": true
+}
