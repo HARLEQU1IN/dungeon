@@ -1,15 +1,15 @@
 use {
     crate::{
-        direction::{DIRECTIONS_COUNT, Direction},
+        direction::{Direction, DIRECTIONS_COUNT},
         items::key::Key,
-        position::{POSITIONS_COUNT, Position},
-    },
-    std::fmt,
+        position::{Position, POSITIONS_COUNT},
+    }, air::PATTERN, exit::PATTERNS, std::fmt
 };
 
 mod air;
 mod exit;
 mod wall;
+
 
 const PATTERNS_COUNT: usize = POSITIONS_COUNT * DIRECTIONS_COUNT;
 
