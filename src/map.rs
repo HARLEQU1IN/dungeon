@@ -39,7 +39,7 @@ impl Map {
                 Wall,
             ],
             [
-                Door(Right, Gold),
+                Case(Right),
                 Air,
                 Wall,
                 Wall,
@@ -51,9 +51,9 @@ impl Map {
                 Wall,
                 Wall,
             ],
-            [Wall, Air, Air, Air, Air, Wall, Air, Air, Air, Air, Wall],
+            [Wall, Air, Air, Air, Air, Air, Air, Air, Air, Air, Wall],
             [
-                Wall, Wall, Wall, Wall, Wall, Wall, Wall, Air, Air, Air, Wall,
+                Wall, Air, Air, Wall, Wall, Wall, Wall, Air, Air, Air, Wall,
             ],
             [Wall, Air, Air, Air, Wall, Air, Wall, Air, Air, Air, Wall],
             [Wall, Air, Air, Air, Wall, Air, Air, Air, Air, Air, Wall],

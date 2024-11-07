@@ -10,6 +10,7 @@ pub enum Action {
     TurnBack,
     HitWall,
     HitDoor,
+    HitCase,
     Closed(Key),
     NonOpen(Block),
     Win,
@@ -28,11 +29,14 @@ impl Action {
             TurnRight => {},
             TurnBack => {},
             HitWall => {
-                println!("You hit a wall!");
+                println!("Вы упёрлись в стену!");
             },
             HitDoor => {
-                println!("You hit a door!");
+                println!("Вы упёрлись в дверь!");
             },
+            HitCase =>{
+                println!("Вы нашли сундук!")
+            }
             Closed(key) => {
                 println!("У вас нет [{key}] для открытия двери.");
             },
@@ -46,7 +50,7 @@ impl Action {
                 return false;
             },
             UnknowCommand => {
-                println!("Unknown command. Try again!");
+                println!("Такой команды нету!");
             },
         }
         true
@@ -60,7 +64,7 @@ impl Action {
                     "d" | "right" | "turn right" => player.turn_right(),
                     "s" | "back" | "turn back" => player.turn_back(),
                     "w" | "forward" => player.move_forward(),
-                    "open door" => player.open_door(),
+                    "o" | "open door" => player.open_door(),
                     "i" | "inventory" | "open inventory" => player.open_inventory(),
                     _ => Action::UnknowCommand,
                 }
