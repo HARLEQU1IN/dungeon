@@ -3,7 +3,7 @@ use {
         direction::{Direction, DIRECTIONS_COUNT},
         items::key::Key,
         position::{Position, POSITIONS_COUNT},
-    }, air::PATTERN, exit::PATTERNS, std::fmt
+    }, std::fmt
 };
 
 mod air;
