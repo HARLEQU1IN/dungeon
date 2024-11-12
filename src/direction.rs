@@ -1,6 +1,6 @@
 use crate::position::{POSITIONS_COUNT, Position};
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Direction {
     #[default]
     Up,

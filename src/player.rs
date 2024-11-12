@@ -2,7 +2,7 @@ use {
     crate::{
         action::Action,
         blocks::Block,
-        direction::{self, Direction},
+        direction::Direction,
         frame::{Frame, GAME_HEIGHT, GAME_WIDTH, INVENTORY_HEIGHT, INVENTORY_WIDTH},
         inventory::Inventory,
         items::Item,
@@ -60,10 +60,8 @@ impl Player {
                 Action::MoveForward
             },
             Block::Wall => Action::HitWall,
-
             Block::Door(..) => Action::HitDoor,
-
-            Block::Case(..) => Action::HitCase
+            Block::Case(..) => Action::HitCase,
         }
     }
 
@@ -88,7 +86,7 @@ impl Player {
             block => Action::NonOpen(block),
         }
     }
-    
+
     pub(crate) fn open_inventory(&mut self) -> Action {
         self.status.go_to(Status::Inventory);
         Action::OpenedInventory

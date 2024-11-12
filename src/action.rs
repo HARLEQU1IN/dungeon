@@ -34,9 +34,9 @@ impl Action {
             HitDoor => {
                 println!("Вы упёрлись в дверь!");
             },
-            HitCase =>{
+            HitCase => {
                 println!("Вы нашли сундук!")
-            }
+            },
             Closed(key) => {
                 println!("У вас нет [{key}] для открытия двери.");
             },
