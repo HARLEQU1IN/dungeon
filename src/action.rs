@@ -1,4 +1,4 @@
-use crate::{blocks::Block, items::key::Key, player::Player, status::Status};
+use crate::{blocks::Block, items::key::Key, player::Player, status::State};
 
 #[derive(Debug, Default)]
 pub enum Action {
@@ -14,6 +14,7 @@ pub enum Action {
     Closed(Key),
     NonOpen(Block),
     Win,
+    Loss,
     UnknowCommand,
     OpenedInventory,
     ClosedInventory,
@@ -49,6 +50,10 @@ impl Action {
                 println!("Вы победили!");
                 return false;
             },
+            Loss =>{
+                println!("Вы проиграли");
+                return false;
+            }
             UnknowCommand => {
                 println!("Такой команды нету!");
             },
@@ -58,7 +63,7 @@ impl Action {
 
     pub fn process_input(&mut self, input: String, player: &mut Player) {
         *self = match player.get_current_status() {
-            Status::Game => {
+            State::Game => {
                 match input.as_str() {
                     "a" | "left" | "turn left" => player.tunr_left(),
                     "d" | "right" | "turn right" => player.turn_right(),
@@ -69,7 +74,7 @@ impl Action {
                     _ => Action::UnknowCommand,
                 }
             },
-            Status::Inventory => {
+            State::Inventory => {
                 match input.as_str() {
                     "q" | "go back" => player.close_inventory(),
                     _ => Action::UnknowCommand,

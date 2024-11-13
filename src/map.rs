@@ -1,5 +1,5 @@
 use {
-    crate::{blocks::Block},
+    crate::blocks::Block,
     rand::{Rng, seq::SliceRandom},
     std::ops::Index,
 };
@@ -13,6 +13,7 @@ impl Map {
     pub(crate) fn new() -> Self {
         let mut map = Self::empty_map();
         map.generate_maze();
+        map.place_doors_and_cases();
         map
     }
 
@@ -52,6 +53,54 @@ impl Map {
             for x in 0..WIDTH {
                 if self.0[y][x] == Block::Air && rng.gen_bool(0.2) {
                     self.0[y][x] = Block::Wall;
+                }
+            }
+        }
+    }
+
+    fn place_doors_and_cases(&mut self) {
+        let mut rng = rand::thread_rng();
+        let mut door_count = 0;
+        let mut chest_count = 0;
+
+        while door_count < 3 || chest_count < 3 {
+            let x = rng.gen_range(0..WIDTH);
+            let y = rng.gen_range(0..HEIGHT);
+
+            if self.0[y][x] == Block::Air {
+                let mut directions = vec![
+                    crate::direction::Direction::Up,
+                    crate::direction::Direction::Down,
+                    crate::direction::Direction::Left,
+                    crate::direction::Direction::Right,
+                ];
+                directions.shuffle(&mut rng);
+
+                let mut valid_direction = None;
+                let mut wall_count = 0;
+                for direction in directions.clone() {
+                    let (dx, dy) = direction.get_forward_offset();
+                    let (.., block) = self.get_neighbour_block(x, y, dx, dy);
+                    if block == Block::Wall {
+                        wall_count += 1;
+                    }
+                    if block == Block::Air {
+                        valid_direction = Some(direction);
+                    }
+                }
+
+                if valid_direction.is_some() && wall_count < 2 {
+                    if door_count < 3 && rng.gen_bool(0.5) {
+                        if let Some(direction) = valid_direction {
+                            self.0[y][x] = Block::Door(direction, crate::items::key::Key::Brozen);
+                            door_count += 1;
+                        }
+                    } else if chest_count < 3 && valid_direction.is_some() {
+                        if let Some(direction) = valid_direction {
+                            self.0[y][x] = Block::Case(direction);
+                            chest_count += 1;
+                        }
+                    }
                 }
             }
         }

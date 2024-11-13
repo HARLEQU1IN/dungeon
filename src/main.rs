@@ -20,6 +20,12 @@ fn main() {
         .add_item(items::Item::Key(items::key::Key::Brozen));
     player
         .inventory
+        .add_item(items::Item::Sword(items::sword::Sword::Dagger));
+    player
+        .inventory
+        .add_item(items::Item::Sword(items::sword::Sword::ShadowDaggers));
+    player
+        .inventory
         .add_item(items::Item::Key(items::key::Key::Silver));
     player
         .inventory
@@ -30,7 +36,7 @@ fn main() {
     player
         .inventory
         .remove_item(items::Item::Key(items::key::Key::Gold));
-
+    player.health_points = 3;
     loop {
         println!("{frame}", frame = player.render());
 
