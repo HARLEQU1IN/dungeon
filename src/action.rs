@@ -1,6 +1,11 @@
-use crate::{blocks::Block, items::key::Key, player::Player, status::State};
+use crate::{
+    blocks::Block,
+    items::{key::Key, sword::Sword},
+    player::Player,
+    status::State,
+};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub enum Action {
     #[default]
     None,
@@ -18,6 +23,10 @@ pub enum Action {
     UnknowCommand,
     OpenedInventory,
     ClosedInventory,
+    Attack,
+    EnemyDefeated,
+    HitEnemy,
+    NoAttack,
 }
 
 impl Action {
@@ -36,7 +45,7 @@ impl Action {
                 println!("Вы упёрлись в дверь!");
             },
             HitCase => {
-                println!("Вы нашли сундук!")
+                println!("Вы нашли сундук!");
             },
             Closed(key) => {
                 println!("У вас нет [{key}] для открытия двери.");
@@ -50,12 +59,37 @@ impl Action {
                 println!("Вы победили!");
                 return false;
             },
-            Loss =>{
+            Loss => {
                 println!("Вы проиграли");
                 return false;
-            }
+            },
             UnknowCommand => {
                 println!("Такой команды нету!");
+            },
+            HitEnemy => {
+                println!("Вы встретили врага!")
+            },
+            Attack => {
+                let sword = Sword::Dagger;
+                println!(
+                    "{} наносит урон: {} и имеет шанс попадания: {:.0}%",
+                    sword,
+                    sword.damage(),
+                    sword.hit_chance() * 100.0
+                );
+                let dual_sword = Sword::ShadowDaggers;
+                println!(
+                    "{} наносит урон: {} и имеет шанс попадания: {:.0}%",
+                    dual_sword,
+                    dual_sword.damage(),
+                    dual_sword.hit_chance() * 100.0
+                );
+            },
+            EnemyDefeated => {
+                println!("Вы победили врага!");
+            },
+            NoAttack => {
+                println!("Это не враг, нельзя атаковать");
             },
         }
         true
@@ -65,12 +99,13 @@ impl Action {
         *self = match player.get_current_status() {
             State::Game => {
                 match input.as_str() {
-                    "a" | "left" | "turn left" => player.tunr_left(),
+                    "a" | "left" | "turn left" => player.turn_left(),
                     "d" | "right" | "turn right" => player.turn_right(),
                     "s" | "back" | "turn back" => player.turn_back(),
                     "w" | "forward" => player.move_forward(),
                     "o" | "open door" => player.open_door(),
                     "i" | "inventory" | "open inventory" => player.open_inventory(),
+                    "h" | "attack" => player.attack_enemy(),
                     _ => Action::UnknowCommand,
                 }
             },

@@ -1,6 +1,7 @@
 mod action;
 mod blocks;
 mod direction;
+mod enemy;
 mod frame;
 mod inventory;
 mod items;
@@ -15,6 +16,8 @@ fn main() {
     let map = Map::new();
     let mut player = Player::new(map);
     let mut action = Action::default();
+
+    // Добавление предметов в инвентарь
     player
         .inventory
         .add_item(items::Item::Key(items::key::Key::Brozen));
@@ -37,6 +40,7 @@ fn main() {
         .inventory
         .remove_item(items::Item::Key(items::key::Key::Gold));
     player.health_points = 3;
+
     loop {
         println!("{frame}", frame = player.render());
 

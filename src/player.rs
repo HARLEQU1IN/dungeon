@@ -9,7 +9,6 @@ use crate::{
     status::{Interface, State},
 };
 
-/// a
 const MAX_HEALTH_POINTS: usize = 3;
 const COUNT_STEPS: usize = 50;
 
@@ -44,7 +43,7 @@ impl Player {
 
     pub(crate) fn get_current_status(&self) -> State { self.interface.get_current() }
 
-    pub(crate) fn tunr_left(&mut self) -> Action {
+    pub(crate) fn turn_left(&mut self) -> Action {
         self.direction.turn_left();
         Action::TurnLeft
     }
@@ -83,6 +82,35 @@ impl Player {
             Block::Wall => Action::HitWall,
             Block::Door(..) => Action::HitDoor,
             Block::Case(..) => Action::HitCase,
+            Block::Enemy(..) => Action::HitEnemy,
+        }
+    }
+
+    pub(crate) fn attack_enemy(&mut self) -> Action {
+        let (dx, dy) = self.direction.get_forward_offset();
+        let Some((.., block)) = self.map.get_neighbour_block_mut(self.x, self.y, dx, dy) else {
+            return Action::NoAttack;
+        };
+
+        match block {
+            Block::Enemy(enemy) => {
+                if enemy.is_alive() {
+                    let damage = 1;
+                    enemy.take_damage(damage);
+
+                    if !enemy.is_alive() {
+                        println!("{} был повержен!", enemy.name);
+                        return Action::EnemyDefeated;
+                    } else {
+                        println!(
+                            "{} получил урон. Осталось здоровья: {}",
+                            enemy.name, enemy.health
+                        );
+                    }
+                }
+                Action::Attack
+            },
+            _ => Action::NoAttack,
         }
     }
 
@@ -91,20 +119,20 @@ impl Player {
         let (.., block) = self.map.get_neighbour_block(self.x, self.y, dx, dy);
         match block {
             Block::Door(exit_direction, exit_key) => {
-                let direction = (self.direction as isize - exit_direction as isize).rem_euclid(4);
+                let direction = (self.direction as isize - *exit_direction as isize).rem_euclid(4);
                 match direction {
                     0 | 2 => {
-                        if self.inventory.has_item(Item::Key(exit_key)) {
+                        if self.inventory.has_item(Item::Key(*exit_key)) {
                             Action::Win
                         } else {
-                            Action::Closed(exit_key)
+                            Action::Closed(*exit_key)
                         }
                     },
                     1 | 3 => Action::HitWall,
                     _ => unreachable!("Impossible because module by 4"),
                 }
             },
-            block => Action::NonOpen(block),
+            block => Action::NonOpen(block.clone()),
         }
     }
 

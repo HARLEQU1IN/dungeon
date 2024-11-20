@@ -1,6 +1,7 @@
 use {
     crate::{
         direction::{DIRECTIONS_COUNT, Direction},
+        enemy::{self, Enemy},
         items::key::Key,
         position::{POSITIONS_COUNT, Position},
     },
@@ -9,17 +10,19 @@ use {
 
 mod air;
 mod case;
+mod enemyb;
 mod exit;
 mod wall;
 
 const PATTERNS_COUNT: usize = POSITIONS_COUNT * DIRECTIONS_COUNT;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Block {
     Air,
     Wall,
     Door(Direction, Key),
     Case(Direction),
+    Enemy(Enemy),
 }
 
 impl Block {
@@ -37,6 +40,13 @@ impl Block {
                 let direction = (direction as isize - *cases_direction as isize).rem_euclid(4);
                 case::PATTERNS[index + direction as usize]
             },
+            Enemy(enemy::Enemy {
+                direction: enemy_direction,
+                ..
+            }) => {
+                let direction = (direction as isize - *enemy_direction as isize).rem_euclid(4);
+                enemyb::PATTERNS[index + direction as usize]
+            },
         }
     }
 }
@@ -49,6 +59,7 @@ impl fmt::Display for Block {
             Wall => write!(f, "Стена"),
             Door(..) => write!(f, "Дверь"),
             Case(..) => write!(f, "Сундук"),
+            Enemy(..) => write!(f, "Враг"),
         }
     }
 }

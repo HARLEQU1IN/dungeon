@@ -5,12 +5,29 @@ pub(crate) enum Sword {
     ShadowDaggers,
     Dagger,
 }
+
 impl Sword {
     pub(crate) fn display_cell(&self) -> &str {
         use Sword::*;
         match self {
             Dagger => "🗡\u{3000}",
             ShadowDaggers => "⚔\u{3000}",
+        }
+    }
+
+    pub(crate) fn damage(&self) -> u32 {
+        use Sword::*;
+        match self {
+            Dagger => 5,
+            ShadowDaggers => 8,
+        }
+    }
+
+    pub(crate) fn hit_chance(&self) -> f32 {
+        use Sword::*;
+        match self {
+            Dagger => 0.75,
+            ShadowDaggers => 0.65,
         }
     }
 }

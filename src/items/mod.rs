@@ -1,7 +1,11 @@
 pub mod key;
 pub mod sword;
 
-use {key::Key, std::fmt::{self, write}, sword::Sword};
+use {
+    key::Key,
+    std::fmt::{self},
+    sword::Sword,
+};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Item {
@@ -17,7 +21,7 @@ impl fmt::Display for Item {
         match self {
             None => write!(f, "   "),
             Key(key) => write!(f, "{}", key.display_cell()),
-            Sword(sword)=>write!(f, "{}",sword.display_cell()),
+            Sword(sword) => write!(f, "{}", sword.display_cell()),
         }
     }
 }
