@@ -3,10 +3,10 @@ use crate::{
     blocks::Block,
     direction::Direction,
     frame::{Frame, GAME_HEIGHT, GAME_WIDTH, INVENTORY_HEIGHT, INVENTORY_WIDTH},
+    interface::{Interface, State},
     inventory::Inventory,
     items::Item,
     map::Map,
-    status::{Interface, State},
 };
 
 const MAX_HEALTH_POINTS: usize = 3;
@@ -35,13 +35,13 @@ impl Player {
             y: 1,
             direction: Default::default(),
             inventory: Default::default(),
-            interface: Interface::new(),
+            interface: Interface::default(),
             health_points: MAX_HEALTH_POINTS,
             steps: 0,
         }
     }
 
-    pub(crate) fn get_current_status(&self) -> State { self.interface.get_current() }
+    pub(crate) fn get_current_status(&self) -> &State { self.interface.get_current() }
 
     pub(crate) fn turn_left(&mut self) -> Action {
         self.direction.turn_left();
@@ -150,6 +150,7 @@ impl Player {
         let pattern = match self.interface.get_current() {
             State::Game => format!("{}", self.render_game()),
             State::Inventory => format!("{}", self.render_inventory()),
+            State::Battle(battle) => format!("{battle}"),
         };
         format!("{}\n{}", pattern, self.render_hp())
     }

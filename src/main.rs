@@ -8,7 +8,8 @@ mod items;
 mod map;
 mod player;
 mod position;
-mod status;
+mod interface;
+mod battle;
 
 use {action::Action, input_macro::input, map::Map, player::Player};
 

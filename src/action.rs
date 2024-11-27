@@ -1,8 +1,8 @@
 use crate::{
     blocks::Block,
+    interface::State,
     items::{key::Key, sword::Sword},
     player::Player,
-    status::State,
 };
 
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -115,6 +115,7 @@ impl Action {
                     _ => Action::UnknowCommand,
                 }
             },
+            State::Battle(battle) => todo!("{battle}"),
         }
     }
 }
